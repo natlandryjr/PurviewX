@@ -1,0 +1,1 @@
+full contents of docs/08-resilience-error-handling.md

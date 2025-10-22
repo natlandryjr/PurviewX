@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PurviewX Setup Wizard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Theme for Tailwind -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              border: 'hsl(220 13% 91%)',
+              input: 'hsl(220 13% 91%)',
+              ring: 'hsl(220 84% 60%)',
+              background: 'hsl(0 0% 100%)',
+              foreground: 'hsl(224 71% 4%)',
+              primary: {
+                DEFAULT: 'hsl(220 84% 60%)',
+                foreground: 'hsl(210 20% 98%)',
+              },
+              secondary: {
+                DEFAULT: 'hsl(220 13% 91%)',
+                foreground: 'hsl(224 71% 4%)',
+              },
+              destructive: {
+                DEFAULT: 'hsl(0 84% 60%)',
+                foreground: 'hsl(210 20% 98%)',
+              },
+              muted: {
+                DEFAULT: 'hsl(220 9% 46%)',
+                foreground: 'hsl(215 28% 17%)',
+              },
+              accent: {
+                DEFAULT: 'hsl(210 20% 94%)',
+                foreground: 'hsl(224 71% 4%)',
+              },
+              card: {
+                DEFAULT: 'hsl(0 0% 100%)',
+                foreground: 'hsl(224 71% 4%)',
+              },
+            },
+            borderRadius: {
+              lg: `0.5rem`,
+              md: `calc(0.5rem - 2px)`,
+              sm: `calc(0.5rem - 4px)`,
+            },
+          }
+        }
+      }
+    </script>
+
+    <!-- Import Map -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.0",
+        "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0",
+        "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.0/client",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+        "react/": "https://aistudiocdn.com/react@^19.2.0/",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.26.0",
+        "@playwright/test": "https://aistudiocdn.com/@playwright/test@^1.56.1"
+      }
+    }
+    </script>
+</head>
+<body class="bg-secondary/30">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>

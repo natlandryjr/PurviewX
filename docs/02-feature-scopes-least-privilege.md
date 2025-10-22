@@ -1,0 +1,1 @@
+full contents of docs/02-feature-scopes-least-privilege.md

@@ -1,0 +1,1 @@
+full contents of docs/07-security-model-srm.md

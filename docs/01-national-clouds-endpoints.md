@@ -1,0 +1,1 @@
+full contents of docs/01-national-clouds-endpoints.md

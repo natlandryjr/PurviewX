@@ -1,0 +1,5 @@
+{
+  "name": "PurviewX Setup Wizard",
+  "description": "A web application to guide users through the initial setup and configuration of PurviewX, a tool for managing Microsoft 365 Compliance. This wizard simplifies connecting to your tenant, granting consent, and configuring core compliance features.",
+  "requestFramePermissions": []
+}

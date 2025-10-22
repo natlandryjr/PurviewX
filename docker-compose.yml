@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: purviewx_app
+    ports:
+      - "3000:3000" # Web UI
+      - "3001:3001" # API health
+      - "3002:3002" # Worker health
+    environment:
+      - NODE_ENV=development
+      # Database connection
+      - DATABASE_URL=postgresql://purviewx_user:purviewx_password@db:5432/purviewx_db?schema=public
+      # Azurite connection
+      - AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;
+    depends_on:
+      - db
+      - azurite
+    volumes:
+      - .:/app # Mount local code for hot-reloading (in a dev setup)
+      - /app/node_modules # Don't mount local node_modules
+
+  db:
+    image: postgres:15-alpine
+    container_name: purviewx_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=purviewx_user
+      - POSTGRES_PASSWORD=purviewx_password
+      - POSTGRES_DB=purviewx_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U purviewx_user -d purviewx_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: purviewx_azurite
+    ports:
+      - "10000:10000" # Blob
+      - "10001:10001" # Queue
+      - "10002:10002" # Table
+
+volumes:
+  postgres_data:
+    driver: local
