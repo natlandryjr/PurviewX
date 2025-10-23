@@ -2,17 +2,28 @@
   "name": "purviewx-setup-wizard",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "pm2-runtime start pm2.config.js",
+    "stop": "pm2 stop all",
+    "restart": "pm2 restart all",
+    "logs": "pm2 logs",
+    "docker:build": "docker build -t purviewx:latest .",
+    "docker:run": "docker run -d --name purviewx_app -p 3000:3000 -p 3001:3001 -p 3002:3002 purviewx:latest",
+    "docker:stop": "docker stop purviewx_app && docker rm purviewx_app",
+    "deploy:production": "./deploy-production.sh production",
+    "deploy:gcc": "./deploy-production.sh gcc",
+    "deploy:gcc-high": "./deploy-production.sh gcc-high"
   },
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "@google/genai": "^1.26.0",
-    "@playwright/test": "^1.56.1"
+    "@playwright/test": "^1.56.1",
+    "serve": "^14.2.1",
+    "pm2": "^5.3.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

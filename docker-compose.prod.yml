@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  purviewx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: purviewx_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000" # Web UI
+      - "3001:3001" # API health
+      - "3002:3002" # Worker health
+    environment:
+      - NODE_ENV=production
+      # Database connection (use Azure Database for PostgreSQL in production)
+      - DATABASE_URL=${DATABASE_URL}
+      # Microsoft Entra ID configuration
+      - ENTRA_CLIENT_ID=${ENTRA_CLIENT_ID}
+      - ENTRA_TENANT_ID=${ENTRA_TENANT_ID}
+      - ENTRA_CLIENT_SECRET=${ENTRA_CLIENT_SECRET}
+      # Cloud environment (Commercial, GCC, GCC High, DOD)
+      - PURVIEWX_CLOUD=${PURVIEWX_CLOUD:-Commercial}
+      # Gemini AI API key
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      # Azure Storage (for evidence storage)
+      - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING}
+      # Security settings
+      - SESSION_SECRET=${SESSION_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - purviewx_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/healthz', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - purviewx_network
+    # Security: Run as non-root user
+    user: "1001:1001"
+    # Resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+
+  # Optional: Local PostgreSQL for development/testing
+  # In production, use Azure Database for PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: purviewx_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-purviewx_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-purviewx_password}
+      - POSTGRES_DB=${POSTGRES_DB:-purviewx_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-purviewx_user} -d ${POSTGRES_DB:-purviewx_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - purviewx_network
+    # Only include in development
+    profiles:
+      - dev
+
+volumes:
+  postgres_data:
+    driver: local
+  purviewx_logs:
+    driver: local
+
+networks:
+  purviewx_network:
+    driver: bridge
